@@ -26,7 +26,7 @@ var (
 
 func main() {
 	var err error
-	pokemons, err = load.LoadDataset("/home/debianism/projects/Pokemon-Battleship/internal/load/filtered_pokemon.csv")
+	pokemons, err = load.LoadDataset("./filtered_pokemon.csv")
 	if err != nil {
 		panic(err)
 	}
