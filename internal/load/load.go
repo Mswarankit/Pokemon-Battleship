@@ -7,9 +7,10 @@ import (
 	"math"
 	"os"
 	"pokemon-battle-simulator/internal/models"
-	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/agnivade/levenshtein"
 )
 
 type LoadPokemon struct {
@@ -51,7 +52,6 @@ func LoadDataset(filePath string) ([]LoadPokemon, error) {
 			}
 		}
 
-		// Create a new Pokemon struct
 		pokemon := LoadPokemon{
 			BasePokemon: models.BasePokemon{
 				Name:    record[0],
@@ -70,36 +70,67 @@ func LoadDataset(filePath string) ([]LoadPokemon, error) {
 var ErrPokemonNotFound = errors.New("pokemon not found")
 var ErrTooManySpellingMistakes = errors.New("too many spelling mistakes in Pokemon name")
 
+// func GetPokemonByName(name string, pokemons []LoadPokemon) (*LoadPokemon, error) {
+// 	name = strings.ToLower(name)
+
+// 	// Exact match check
+// 	for _, p := range pokemons {
+// 		if strings.ToLower(p.Name) == name {
+// 			return &p, nil
+// 		}
+// 	}
+
+// 	// Regexp for one-word spelling mistake
+// 	pattern := "^" + strings.Join(strings.Split(name, ""), "?.?") + "?$"
+// 	re, err := regexp.Compile(pattern)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	var matchedPokemon *LoadPokemon
+// 	for _, p := range pokemons {
+// 		if re.MatchString(strings.ToLower(p.Name)) {
+// 			if matchedPokemon != nil {
+// 				// More than one match found, consider it as too many spelling mistakes
+// 				return nil, ErrTooManySpellingMistakes
+// 			}
+// 			matchedPokemon = &p
+// 		}
+// 	}
+
+// 	if matchedPokemon != nil {
+// 		return matchedPokemon, nil
+// 	}
+
+//		return nil, ErrPokemonNotFound
+//	}
 func GetPokemonByName(name string, pokemons []LoadPokemon) (*LoadPokemon, error) {
 	name = strings.ToLower(name)
 
-	// Exact match check
 	for _, p := range pokemons {
 		if strings.ToLower(p.Name) == name {
 			return &p, nil
 		}
 	}
 
-	// Regexp for one-word spelling mistake
-	pattern := "^" + strings.Join(strings.Split(name, ""), "?.?") + "?$"
-	re, err := regexp.Compile(pattern)
-	if err != nil {
-		return nil, err
-	}
+	var bestMatch *LoadPokemon
+	minDistance := len(name)
 
-	var matchedPokemon *LoadPokemon
 	for _, p := range pokemons {
-		if re.MatchString(strings.ToLower(p.Name)) {
-			if matchedPokemon != nil {
-				// More than one match found, consider it as too many spelling mistakes
-				return nil, ErrTooManySpellingMistakes
-			}
-			matchedPokemon = &p
+		distance := levenshtein.ComputeDistance(name, strings.ToLower(p.Name))
+
+		if distance == 1 {
+			return &p, nil
+		}
+
+		if distance < minDistance {
+			minDistance = distance
+			bestMatch = &p
 		}
 	}
 
-	if matchedPokemon != nil {
-		return matchedPokemon, nil
+	if minDistance <= 2 {
+		return bestMatch, nil
 	}
 
 	return nil, ErrPokemonNotFound
