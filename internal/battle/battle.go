@@ -8,7 +8,6 @@ import (
 
 type BattlePokemon struct {
 	models.BasePokemon
-	Damage float64
 }
 
 type BattleResult struct {
@@ -27,7 +26,7 @@ func (bp *BattlePokemon) CalculateDamage(attacker, defender BattlePokemon) float
 
 func Battle(pokemonA, pokemonB BattlePokemon) (*BattleResult, error) {
 	if pokemonA.Name == pokemonB.Name {
-		return nil, errors.New("both Pokémon are the same")
+		return nil, errors.New("both Pokemon are the same")
 	}
 
 	// Round 1: A attacks B

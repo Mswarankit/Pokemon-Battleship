@@ -68,42 +68,7 @@ func LoadDataset(filePath string) ([]LoadPokemon, error) {
 }
 
 var ErrPokemonNotFound = errors.New("pokemon not found")
-var ErrTooManySpellingMistakes = errors.New("too many spelling mistakes in Pokemon name")
 
-// func GetPokemonByName(name string, pokemons []LoadPokemon) (*LoadPokemon, error) {
-// 	name = strings.ToLower(name)
-
-// 	// Exact match check
-// 	for _, p := range pokemons {
-// 		if strings.ToLower(p.Name) == name {
-// 			return &p, nil
-// 		}
-// 	}
-
-// 	// Regexp for one-word spelling mistake
-// 	pattern := "^" + strings.Join(strings.Split(name, ""), "?.?") + "?$"
-// 	re, err := regexp.Compile(pattern)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	var matchedPokemon *LoadPokemon
-// 	for _, p := range pokemons {
-// 		if re.MatchString(strings.ToLower(p.Name)) {
-// 			if matchedPokemon != nil {
-// 				// More than one match found, consider it as too many spelling mistakes
-// 				return nil, ErrTooManySpellingMistakes
-// 			}
-// 			matchedPokemon = &p
-// 		}
-// 	}
-
-// 	if matchedPokemon != nil {
-// 		return matchedPokemon, nil
-// 	}
-
-//		return nil, ErrPokemonNotFound
-//	}
 func GetPokemonByName(name string, pokemons []LoadPokemon) (*LoadPokemon, error) {
 	name = strings.ToLower(name)
 
