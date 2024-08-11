@@ -1,4 +1,4 @@
-# Pokémon Battle Simulator
+# Pokemon Battle Simulator
 
 This project implements a Pokémon Battle Simulator. It provides APIs for listing Pokémon, initiating battles, and retrieving battle results.
 
